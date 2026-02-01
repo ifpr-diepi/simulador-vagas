@@ -1,4 +1,4 @@
-# 📊 Simulador de Vagas - Processo Seletivo IFPR
+# 📊 Simulador de Vagas
 
 Ferramenta estratégica desenvolvida para a simulação e auditoria da distribuição de vagas em Processos Seletivos, permitindo acompanhar o fluxo de migração de candidatos.
 
