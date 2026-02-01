@@ -9,7 +9,7 @@ import React, { useState } from 'react';
 
 // Ícones SVG inline (substituindo lucide-react)
 const Icons = {
-    Users: ({ className }) => React.createElement('svg', {
+    Users: ({ className }: any) => React.createElement('svg', {
         className: className || '',
         xmlns: 'http://www.w3.org/2000/svg',
         width: 24,
@@ -27,7 +27,7 @@ const Icons = {
         React.createElement('path', { d: 'M16 3.13a4 4 0 0 1 0 7.75' })
     ),
 
-    Play: ({ className }) => React.createElement('svg', {
+    Play: ({ className }: any) => React.createElement('svg', {
         className: className || '',
         xmlns: 'http://www.w3.org/2000/svg',
         width: 24,
@@ -40,7 +40,7 @@ const Icons = {
         React.createElement('polygon', { points: '5 3 19 12 5 21 5 3' })
     ),
 
-    RotateCcw: ({ className }) => React.createElement('svg', {
+    RotateCcw: ({ className }: any) => React.createElement('svg', {
         className: className || '',
         xmlns: 'http://www.w3.org/2000/svg',
         width: 24,
@@ -54,7 +54,7 @@ const Icons = {
         React.createElement('path', { d: 'M3.51 15a9 9 0 1 0 2.13-9.36L1 10' })
     ),
 
-    ArrowRight: ({ className }) => React.createElement('svg', {
+    ArrowRight: ({ className }: any) => React.createElement('svg', {
         className: className || '',
         xmlns: 'http://www.w3.org/2000/svg',
         width: 24,
@@ -68,7 +68,7 @@ const Icons = {
         React.createElement('polyline', { points: '12 5 19 12 12 19' })
     ),
 
-    MoveUp: ({ className }) => React.createElement('svg', {
+    MoveUp: ({ className }: any) => React.createElement('svg', {
         className: className || '',
         xmlns: 'http://www.w3.org/2000/svg',
         width: 24,
@@ -81,7 +81,7 @@ const Icons = {
         React.createElement('polyline', { points: '18 15 12 9 6 15' })
     ),
 
-    ChevronRight: ({ className }) => React.createElement('svg', {
+    ChevronRight: ({ className }: any) => React.createElement('svg', {
         className: className || '',
         xmlns: 'http://www.w3.org/2000/svg',
         width: 24,
@@ -198,24 +198,24 @@ const QuotaMigrationSimulator = () => {
     const [quotas, setQuotas] = useState(config2024.quotas);
 
     // Mapa de migração (pode ser modificado em modo custom)
-    const [migrationMap, setMigrationMap] = useState(config2024.migrationMap);
+    const [migrationMap, setMigrationMap] = useState<Record<string, string[]>>(config2024.migrationMap);
 
     // Lista de todos os candidatos carregados do CSV
-    const [students, setStudents] = useState([]);
+    const [students, setStudents] = useState<any[]>([]);
 
     // Candidatos organizados e ranqueados por cota (para exibição na barra lateral)
-    const [rankedStudents, setRankedStudents] = useState([]);
+    const [rankedStudents, setRankedStudents] = useState<any[]>([]);
 
     // Array com todos os passos da simulação (para navegação)
-    const [simulationSteps, setSimulationSteps] = useState([]);
+    const [simulationSteps, setSimulationSteps] = useState<any[]>([]);
 
     // Índice do passo atual sendo exibido
     const [currentStep, setCurrentStep] = useState(0);
     const [isSimulating, setIsSimulating] = useState(false);
-    const [finalResult, setFinalResult] = useState(null);
+    const [finalResult, setFinalResult] = useState<any>(null);
 
     // Estado para edição do mapa de migração
-    const [editingMigration, setEditingMigration] = useState(null); // quota code sendo editada
+    const [editingMigration, setEditingMigration] = useState<string | null>(null);
 
     // Estado para adicionar nova cota
     const [addingNewQuota, setAddingNewQuota] = useState(false);
@@ -223,7 +223,7 @@ const QuotaMigrationSimulator = () => {
     const [newQuotaName, setNewQuotaName] = useState('');
 
     // Estado para modal de confirmação
-    const [confirmDelete, setConfirmDelete] = useState(null); // quota code a ser removida
+    const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
 
     // Funções para gerenciar cotas
     const addNewQuota = () => {
@@ -258,8 +258,8 @@ const QuotaMigrationSimulator = () => {
         setAddingNewQuota(false);
     };
 
-    const removeQuota = (quotaCode) => {
-        console.log('Tentando remover cota:', quotaCode);
+    const removeQuota = (quotaCode: string) => {
+        //console.log('Tentando remover cota:', quotaCode);
 
         // Ao invés de confirm, abre modal customizado
         setConfirmDelete(quotaCode);
@@ -267,31 +267,34 @@ const QuotaMigrationSimulator = () => {
 
     const confirmRemoveQuota = () => {
         const quotaCode = confirmDelete;
-        console.log('Removendo cota:', quotaCode);
+        //console.log('Removendo cota:', quotaCode);
 
         // Remover da lista de cotas
         setQuotas(prev => {
             const novasCotas = prev.filter(q => q.code !== quotaCode);
-            console.log('Cotas antes:', prev.map(q => q.code));
-            console.log('Cotas depois:', novasCotas.map(q => q.code));
+            //console.log('Cotas antes:', prev.map(q => q.code));
+            //console.log('Cotas depois:', novasCotas.map(q => q.code));
             return novasCotas;
         });
 
         // Remover do mapa de migração
         setMigrationMap(prev => {
-            const newMap = { ...prev };
+            const newMap: Record<string, string[]> = { ...prev };
 
             // Remover a entrada da cota
-            delete newMap[quotaCode];
+            const codeToDelete = confirmDelete;
+            if (codeToDelete) {
+                delete newMap[codeToDelete];
 
-            // Remover das listas de destino de outras cotas
-            Object.keys(newMap).forEach(key => {
-                if (newMap[key]) {
-                    newMap[key] = newMap[key].filter(dest => dest !== quotaCode);
-                }
-            });
+                // Remover das listas de destino de outras cotas
+                Object.keys(newMap).forEach(key => {
+                    if (newMap[key]) {
+                        newMap[key] = newMap[key].filter(dest => dest !== quotaCode);
+                    }
+                });
+            }
 
-            console.log('Mapa de migração atualizado');
+            //console.log('Mapa de migração atualizado');
             return newMap;
         });
 
@@ -300,26 +303,26 @@ const QuotaMigrationSimulator = () => {
             setEditingMigration(null);
         }
 
-        console.log('Cota removida com sucesso!');
+        //console.log('Cota removida com sucesso!');
         setConfirmDelete(null);
     };
 
     // Funções para editar mapa de migração
-    const addDestination = (quotaCode, destCode) => {
+    const addDestination = (quotaCode: string, destCode: string) => {
         setMigrationMap(prev => ({
             ...prev,
             [quotaCode]: [...(prev[quotaCode] || []), destCode]
         }));
     };
 
-    const removeDestination = (quotaCode, index) => {
+    const removeDestination = (quotaCode: string, index: number) => {
         setMigrationMap(prev => ({
             ...prev,
             [quotaCode]: prev[quotaCode].filter((_, i) => i !== index)
         }));
     };
 
-    const moveDestination = (quotaCode, fromIndex, toIndex) => {
+    const moveDestination = (quotaCode: string, fromIndex: number, toIndex: number) => {
         setMigrationMap(prev => {
             const newDestinations = [...prev[quotaCode]];
             const [moved] = newDestinations.splice(fromIndex, 1);
@@ -331,31 +334,31 @@ const QuotaMigrationSimulator = () => {
         });
     };
 
-    const updateQuotaVagas = (code, value) => {
+    const updateQuotaVagas = (code: string, value: string) => {
         setQuotas(prev => prev.map(q =>
             q.code === code ? { ...q, vagas: parseInt(value) || 0 } : q
         ));
     };
 
-    const updateQuotaPriority = (code, value) => {
+    const updateQuotaPriority = (code: string, value: string) => {
         setQuotas(prev => prev.map(q =>
             q.code === code ? { ...q, priority: parseInt(value) || 0 } : q
         ));
     };
 
-    const applyPreset = (presetTotal) => {
+    const applyPreset = (presetTotal: string) => {
         const activeConfig = getActiveConfig();
         const preset = activeConfig.presets.find(p => p.total === parseInt(presetTotal));
         if (preset) {
             setQuotas(prev => prev.map(q => ({
                 ...q,
-                vagas: preset.vagas[q.code] || 0
+                vagas: (preset.vagas as Record<string, number>)[q.code] || 0
             })));
         }
     };
 
     // Função para trocar de ano/configuração
-    const changeYear = (year) => {
+    const changeYear = (year: string) => {
         setSelectedYear(year);
 
         if (year === '2024') {
@@ -373,7 +376,7 @@ const QuotaMigrationSimulator = () => {
         }
     };
 
-    const parseCSV = (text) => {
+    const parseCSV = (text: string) => {
         const lines = text.trim().split('\n');
         const studentMap = new Map();
 
@@ -473,7 +476,7 @@ const QuotaMigrationSimulator = () => {
         setStudents(parsed);
 
         const sortedQuotas = [...quotas].sort((a, b) => a.priority - b.priority);
-        const ranking = [];
+        const ranking: { quota: string; students: any[] }[] = [];
 
         sortedQuotas.forEach(quota => {
             const studentsInQuota = parsed
@@ -485,11 +488,16 @@ const QuotaMigrationSimulator = () => {
                     }
                     // Segundo critério: data de nascimento (mais velho primeiro)
                     // Converte DD/MM/YYYY para objeto Date
-                    const parseDate = (dateStr) => {
-                        const [day, month, year] = dateStr.split('/');
+                    const parseDate = (dateStr: string | undefined) => {
+                        if (!dateStr) return new Date(0);
+                        const [day, month, year] = dateStr.split('/').map(Number);
+
+                        if (day === undefined || month === undefined || year === undefined) {
+                            return new Date(0);
+                        }
                         return new Date(year, month - 1, day);
                     };
-                    return parseDate(a.dataNascimento) - parseDate(b.dataNascimento);
+                    return parseDate(a.dataNascimento).getTime() - parseDate(b.dataNascimento).getTime();
                 });
 
             if (studentsInQuota.length > 0) {
@@ -503,13 +511,15 @@ const QuotaMigrationSimulator = () => {
         setRankedStudents(ranking);
     };
 
-    const handleFileUpload = (e) => {
+    const handleFileUpload = (e: any) => {
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
-            reader.onload = (event) => {
-                const text = event.target.result;
-                parseCSV(text);
+            reader.onload = () => {
+                const text = reader.result;
+                if (typeof text === 'string') {
+                    parseCSV(text);
+                }
             };
             reader.readAsText(file);
         }
@@ -518,14 +528,14 @@ const QuotaMigrationSimulator = () => {
     const runSimulation = () => {
         const steps = [];
         const sortedQuotas = [...quotas].sort((a, b) => a.priority - b.priority);
-        const priorityMap = {};
+        const priorityMap: Record<string, number> = {};
         sortedQuotas.forEach(q => {
             priorityMap[q.code] = q.priority;
         });
 
-        const state = {};
-        const classificadosGlobal = new Set();
-        const vagasRecebidas = {};
+        const state: Record<string, any> = {};
+        const classificadosGlobal = new Set<number>();
+        const vagasRecebidas: Record<string, string[]> = {};
 
         sortedQuotas.forEach(q => {
             vagasRecebidas[q.code] = [];
@@ -555,11 +565,16 @@ const QuotaMigrationSimulator = () => {
                             return b.nota - a.nota;
                         }
                         // Segundo critério: data de nascimento (mais velho primeiro)
-                        const parseDate = (dateStr) => {
-                            const [day, month, year] = dateStr.split('/');
-                            return new Date(year, month - 1, day);
-                        };
-                        return parseDate(a.dataNascimento) - parseDate(b.dataNascimento);
+                        const parseDate = (dateStr: string | undefined) => {
+                        if (!dateStr) return new Date(0);
+                        const [day, month, year] = dateStr.split('/').map(Number);
+
+                        if (day === undefined || month === undefined || year === undefined) {
+                            return new Date(0);
+                        }
+                        return new Date(year, month - 1, day);
+                    };
+                    return parseDate(a.dataNascimento).getTime() - parseDate(b.dataNascimento).getTime();
                     })
             };
         });
@@ -572,7 +587,7 @@ const QuotaMigrationSimulator = () => {
             vagasRecebidas: JSON.parse(JSON.stringify(vagasRecebidas))
         });
 
-        const processarVaga = (quotaCode, apenasUma = false) => {
+        const processarVaga = (quotaCode: string, apenasUma = false) => {
             const quotaState = state[quotaCode];
 
             if (quotaState.vagas <= 0) return;
@@ -587,7 +602,7 @@ const QuotaMigrationSimulator = () => {
                     classificadosGlobal.add(candidato.id);
 
                     // Preencher a primeira vaga disponível
-                    const vagaDisponivel = quotaState.vagasIndividuais.find(v => !v.preenchida);
+                    const vagaDisponivel = quotaState.vagasIndividuais.find((v: any) => !v.preenchida);
                     if (vagaDisponivel) {
                         vagaDisponivel.preenchida = true;
                         vagaDisponivel.estudante = candidato.name;
@@ -614,7 +629,7 @@ const QuotaMigrationSimulator = () => {
                 let cotaAnterior = null;
 
                 for (const [code, data] of Object.entries(state)) {
-                    if (data.classificados.some(c => c.id === candidato.id)) {
+                    if (data.classificados.some((c: any) => c.id === candidato.id)) {
                         const cotaAtualPriority = priorityMap[code];
                         const quotaPriority = priorityMap[quotaCode];
                         if (quotaPriority < cotaAtualPriority) {
@@ -625,14 +640,14 @@ const QuotaMigrationSimulator = () => {
                     }
                 }
 
-                if (podeUpgrade) {
+                if (podeUpgrade && cotaAnterior) {
                     // Remove da cota anterior
-                    const idx = state[cotaAnterior].classificados.findIndex(c => c.id === candidato.id);
+                    const idx = state[cotaAnterior].classificados.findIndex((c: any) => c.id === candidato.id);
                     state[cotaAnterior].classificados.splice(idx, 1);
                     state[cotaAnterior].vagas += 1;
 
                     // Libera a vaga antiga no array de vagas individuais
-                    const vagaAntiga = state[cotaAnterior].vagasIndividuais.find(v => v.estudante === candidato.name);
+                    const vagaAntiga = state[cotaAnterior].vagasIndividuais.find((v: any) => v.estudante === candidato.name);
                     if (vagaAntiga) {
                         vagaAntiga.preenchida = false;
                         vagaAntiga.estudante = null;
@@ -643,7 +658,7 @@ const QuotaMigrationSimulator = () => {
                     quotaState.vagas -= 1;
 
                     // Preenche a primeira vaga disponível na nova cota
-                    const vagaDisponivel = quotaState.vagasIndividuais.find(v => !v.preenchida);
+                    const vagaDisponivel = quotaState.vagasIndividuais.find((v: any) => !v.preenchida);
                     if (vagaDisponivel) {
                         vagaDisponivel.preenchida = true;
                         vagaDisponivel.estudante = candidato.name;
@@ -676,13 +691,13 @@ const QuotaMigrationSimulator = () => {
                 if (quotaState.vagas > 0 && state[targetCode]) {
                     const targetState = state[targetCode];
 
-                    const temCandidatoNovo = targetState.aguardando.some(s => !classificadosGlobal.has(s.id));
+                    const temCandidatoNovo = targetState.aguardando.some((s: any) => !classificadosGlobal.has(s.id));
 
-                    const temCandidatoUpgrade = targetState.aguardando.some(s => {
+                    const temCandidatoUpgrade = targetState.aguardando.some((s: any) => {
                         if (!classificadosGlobal.has(s.id)) return false;
 
                         for (const [code, data] of Object.entries(state)) {
-                            if (data.classificados.some(c => c.id === s.id)) {
+                            if (data.classificados.some((c: any) => c.id === s.id)) {
                                 const cotaAtualPriority = priorityMap[code];
                                 const targetPriority = priorityMap[targetCode];
                                 return targetPriority < cotaAtualPriority;
@@ -697,11 +712,11 @@ const QuotaMigrationSimulator = () => {
                         quotaState.vagas -= 1;
 
                         // Priorizar remover vaga RECEBIDA vazia, senão remove vaga original vazia
-                        let vagaParaRemover = quotaState.vagasIndividuais.find(v => !v.preenchida && v.recebidaDe !== null);
+                        let vagaParaRemover = quotaState.vagasIndividuais.find((v: any) => !v.preenchida && v.recebidaDe !== null);
 
                         // Se não encontrou vaga recebida vazia, pega qualquer vaga vazia
                         if (!vagaParaRemover) {
-                            vagaParaRemover = quotaState.vagasIndividuais.reverse().find(v => !v.preenchida);
+                            vagaParaRemover = quotaState.vagasIndividuais.reverse().find((v: any) => !v.preenchida);
                             quotaState.vagasIndividuais.reverse(); // Volta à ordem normal
                         }
 
@@ -725,7 +740,7 @@ const QuotaMigrationSimulator = () => {
                         vagasRecebidas[targetCode].push(quotaCode);
 
                         // Encontrar a posição certa: após a última vaga preenchida
-                        let posicaoInsercao = targetState.vagasIndividuais.findIndex(v => !v.preenchida);
+                        let posicaoInsercao = targetState.vagasIndividuais.findIndex((v: any) => !v.preenchida);
                         if (posicaoInsercao === -1) {
                             // Todas as vagas estão preenchidas, adiciona no final
                             posicaoInsercao = targetState.vagasIndividuais.length;
@@ -767,14 +782,14 @@ const QuotaMigrationSimulator = () => {
             processarVaga(quota.code, false);
         });
 
-        const result = {};
+        const result: Record<string, any> = {};
         Object.keys(state).forEach(code => {
             result[code] = {
                 vagasOriginais: state[code].vagasOriginais,
                 vagasAtivas: state[code].vagasAtivas,
                 classificados: state[code].classificados.length,
                 vagasSobressalentes: state[code].vagas,
-                alunos: state[code].classificados.map(s => s.name)
+                alunos: state[code].classificados.map((s: any) => s.name)
             };
         });
 
@@ -1221,14 +1236,16 @@ const QuotaMigrationSimulator = () => {
                                             <div key={quota} className="border-b pb-3">
                                                 <div className="font-bold text-xs text-indigo-600 mb-2">{quota}</div>
                                                 <div className="space-y-1">
-                                                    {quotaStudents.map((student, idx) => {
+                                                    {quotaStudents.map((student: any, idx: number) => {
                                                         const isClassified = currentStepData.classificadosGlobal.has(student.id);
 
                                                         let classifiedPriority = 999;
 
                                                         if (isClassified) {
-                                                            for (const [code, data] of Object.entries(currentStepData.state)) {
-                                                                if (data.classificados.some(s => s.id === student.id)) {
+                                                            const entries = Object.entries(currentStepData.state) as [string, any][];
+
+                                                            for (const [code, data] of entries) {
+                                                                if (data.classificados.some((s: any) => s.id === student.id)) {
                                                                     classifiedPriority = quotas.find(q => q.code === code)?.priority || 999;
                                                                     break;
                                                                 }
@@ -1263,14 +1280,16 @@ const QuotaMigrationSimulator = () => {
                                             <div key={quota} className="border-b pb-3">
                                                 <div className="font-bold text-xs text-indigo-600 mb-2">{quota}</div>
                                                 <div className="space-y-1">
-                                                    {quotaStudents.map((student, idx) => {
+                                                    {quotaStudents.map((student: any, idx: number) => {
                                                         const isClassified = currentStepData.classificadosGlobal.has(student.id);
 
                                                         let classifiedPriority = 999;
 
                                                         if (isClassified) {
-                                                            for (const [code, data] of Object.entries(currentStepData.state)) {
-                                                                if (data.classificados.some(s => s.id === student.id)) {
+                                                            const entries = Object.entries(currentStepData.state) as [string, any][];
+
+                                                            for (const [code, data] of entries) {
+                                                                if (data.classificados.some((s: any) => s.id === student.id)) {
                                                                     classifiedPriority = quotas.find(q => q.code === code)?.priority || 999;
                                                                     break;
                                                                 }
@@ -1305,14 +1324,16 @@ const QuotaMigrationSimulator = () => {
                                             <div key={quota} className="border-b pb-3">
                                                 <div className="font-bold text-xs text-indigo-600 mb-2">{quota}</div>
                                                 <div className="space-y-1">
-                                                    {quotaStudents.map((student, idx) => {
+                                                    {quotaStudents.map((student: any, idx: number) => {
                                                         const isClassified = currentStepData.classificadosGlobal.has(student.id);
 
                                                         let classifiedPriority = 999;
 
                                                         if (isClassified) {
-                                                            for (const [code, data] of Object.entries(currentStepData.state)) {
-                                                                if (data.classificados.some(s => s.id === student.id)) {
+                                                            const entries = Object.entries(currentStepData.state) as [string, any][];
+
+                                                            for (const [code, data] of entries) {
+                                                                if (data.classificados.some((s: any) => s.id === student.id)) {
                                                                     classifiedPriority = quotas.find(q => q.code === code)?.priority || 999;
                                                                     break;
                                                                 }
@@ -1431,18 +1452,18 @@ const QuotaMigrationSimulator = () => {
                                 </div>
                                 <div className="grid grid-cols-4 gap-2">
                                     {(() => {
-                                        const allSlots = [];
+                                        const allSlots: any[] = [];
                                         let slotNumber = 1;
 
-                                        Object.entries(currentStepData.state).forEach(([code, data]) => {
+                                        (Object.entries(currentStepData.state) as [string, any][]).forEach(([code, data]) => {
                                             // Separar vagas preenchidas e vazias
-                                            const vagasPreenchidas = data.vagasIndividuais.filter(v => v.preenchida);
-                                            const vagasVazias = data.vagasIndividuais.filter(v => !v.preenchida);
+                                            const vagasPreenchidas = data.vagasIndividuais.filter((v: any) => v.preenchida);
+                                            const vagasVazias = data.vagasIndividuais.filter((v: any) => !v.preenchida);
 
                                             // Ordenar vagas preenchidas por nota do estudante (maior nota primeiro)
-                                            vagasPreenchidas.sort((a, b) => {
-                                                const estudanteA = data.classificados.find(c => c.name === a.estudante);
-                                                const estudanteB = data.classificados.find(c => c.name === b.estudante);
+                                            vagasPreenchidas.sort((a: any, b: any) => {
+                                                const estudanteA = data.classificados.find((c: any) => c.name === a.estudante);
+                                                const estudanteB = data.classificados.find((c: any) => c.name === b.estudante);
 
                                                 if (!estudanteA || !estudanteB) return 0;
 
@@ -1452,15 +1473,22 @@ const QuotaMigrationSimulator = () => {
                                                 }
 
                                                 // Desempate por data de nascimento (mais velho primeiro)
-                                                const parseDate = (dateStr) => {
-                                                    const [day, month, year] = dateStr.split('/');
+                                                const parseDate = (dateStr: string | undefined) => {
+                                                    if (!dateStr) return new Date(0);
+                                                    const [day, month, year] = dateStr.split('/').map(Number);
+                                                    if (day === undefined || month === undefined || year === undefined) {
+                                                        return new Date(0);
+                                                    }
                                                     return new Date(year, month - 1, day);
                                                 };
-                                                return parseDate(estudanteA.dataNascimento) - parseDate(estudanteB.dataNascimento);
+                                                const timeA = parseDate(estudanteA?.dataNascimento).getTime();
+                                                const timeB = parseDate(estudanteB?.dataNascimento).getTime();
+
+                                                return timeA - timeB;
                                             });
 
                                             // Adicionar vagas preenchidas ordenadas
-                                            vagasPreenchidas.forEach(vaga => {
+                                            vagasPreenchidas.forEach((vaga: any) => {
                                                 allSlots.push({
                                                     number: slotNumber++,
                                                     quota: code,
@@ -1472,7 +1500,7 @@ const QuotaMigrationSimulator = () => {
                                             });
 
                                             // Adicionar vagas vazias (manter ordem original)
-                                            vagasVazias.forEach(vaga => {
+                                            vagasVazias.forEach((vaga: any) => {
                                                 allSlots.push({
                                                     number: slotNumber++,
                                                     quota: code,
@@ -1520,7 +1548,7 @@ const QuotaMigrationSimulator = () => {
                                 <div className="bg-white rounded-lg shadow-lg p-4">
                                     <h2 className="text-xl font-bold text-gray-800 mb-3">Resultado Final</h2>
                                     <div className="grid grid-cols-2 gap-3">
-                                        {Object.entries(finalResult).map(([code, data]) => (
+                                        {(Object.entries(finalResult) as [string, any][]).map(([code, data]) => (
                                             <div key={code} className="border-2 rounded-lg p-3 bg-gradient-to-br from-gray-50 to-gray-100">
                                                 <div className="font-bold text-sm text-indigo-600 mb-2">{code}</div>
                                                 <div className="space-y-1 text-xs">
@@ -1535,7 +1563,7 @@ const QuotaMigrationSimulator = () => {
                                                     {data.alunos.length > 0 && (
                                                         <div className="mt-2 pt-2 border-t">
                                                             <div className="text-xs font-semibold text-gray-600 mb-1">Aprovados:</div>
-                                                            {data.alunos.map((nome, i) => (
+                                                            {data.alunos.map((nome: string, i: number) => (
                                                                 <div key={i} className="text-xs text-gray-700 flex items-center gap-1">
                                                                     <ChevronRight className="w-3 h-3" />
                                                                     {nome}
@@ -1553,7 +1581,7 @@ const QuotaMigrationSimulator = () => {
 
                         <div className="w-48 lg:w-56 bg-white rounded-lg shadow-lg p-4 max-h-screen overflow-y-auto">
                             <div className="space-y-2">
-                                {Object.entries(currentStepData.state).map(([code, data]) => {
+                                {(Object.entries(currentStepData.state) as [string, any][]).map(([code, data]) => {
                                     const vagasRecebidas = (currentStepData.vagasRecebidas[code] || []).length;
                                     const vagasPerdidas = data.vagasOriginais - data.vagasAtivas;
 
@@ -1563,15 +1591,15 @@ const QuotaMigrationSimulator = () => {
                                     // Calcular candidatos restantes (não classificados OU classificados em cota pior)
                                     const cotaAtualPriority = quotas.find(q => q.code === code)?.priority || 999;
 
-                                    const candidatosRestantes = data.aguardando.filter(candidato => {
+                                    const candidatosRestantes = data.aguardando.filter((candidato: any) => {
                                         // Se não está classificado, conta como restante
                                         if (!currentStepData.classificadosGlobal.has(candidato.id)) {
                                             return true;
                                         }
 
                                         // Se está classificado, verifica em qual cota
-                                        for (const [quotaCode, quotaData] of Object.entries(currentStepData.state)) {
-                                            if (quotaData.classificados.some(c => c.id === candidato.id)) {
+                                        for (const [quotaCode, quotaData] of Object.entries(currentStepData.state)as [string, any][]) {
+                                            if (quotaData.classificados.some((c: any) => c.id === candidato.id)) {
                                                 const cotaClassificadaPriority = quotas.find(q => q.code === quotaCode)?.priority || 999;
                                                 // Só conta como "eliminado" se a cota classificada é MELHOR OU IGUAL
                                                 // Se a cota classificada é PIOR, ainda conta como restante
