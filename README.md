@@ -1,16 +1,25 @@
-# React + Vite
+# 📊 Simulador de Vagas - Processo Seletivo IFPR
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Ferramenta estratégica desenvolvida para a simulação e auditoria da distribuição de vagas em Processos Seletivos, permitindo acompanhar o fluxo de migração de candidatos.
 
-Currently, two official plugins are available:
+## 🚀 Funcionalidades Principais
+* **Personalização Total**: Configuração modular de vagas, permitindo deletar, inserir ou ajustar tipos de cotas conforme o edital.
+* **Gestão de Prioridades**: Ajuste fino da ordem de migração e prioridade das vagas para garantir o cumprimento da legislação.
+* **Painel de Simulação**: Visualização detalhada do processo de migração passo a passo.
+* **Gestão de Candidatos**: Painel dedicado para acompanhamento de listas de classificados e status de vagas ativas.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🛠️ Tecnologias
+* **React + Vite**: Interface ágil e de alta performance.
+* **TypeScript**: Garantia de integridade nos algoritmos de migração.
+* **Tailwind CSS**: Design moderno e focado na usabilidade de dados complexos.
 
-## React Compiler
+## 📋 Como usar
+1. **Configuração do Cenário**: Selecione uma configuração padrão ou personalize a sua. Defina o total de vagas e ajuste a ordem de prioridade e migração das cotas.
+2. **Importação de Dados**: Carregue o arquivo CSV contendo os dados dos candidatos, respeitando o formato aceito pelo sistema.
+3. **Execução da Simulação**: Clique em "Iniciar Simulação" para processar a distribuição das vagas.
+4. **Auditoria Passo a Passo**: Utilize os controles "Anterior" e "Próximo" para percorrer o fluxo de migração e verificar como cada vaga foi ocupada.
+5. **Acompanhamento**: Monitore o painel final para validar a lista de classificados e o preenchimento das vagas.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 📩 Contato
+Para dúvidas técnicas ou sugestões de melhoria, entre em contato com a **DIEPI/PROENS**: 
+📧 **diepi.proens@ifpr.edu.br**
